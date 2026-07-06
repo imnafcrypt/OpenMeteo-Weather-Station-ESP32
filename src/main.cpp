@@ -3,7 +3,14 @@
 #define PASS "12345678"
 #include <Arduino.h>
 
-const char *coordinate[1][3]={{"Jakarta", "-6.20", "106.82"}};
+unsigned int indexloc = 0;
+
+const char *coordinate[][3] = {
+    {"Jakarta", "-6.20", "106.82"},
+    {"Surabaya", "-7.25", "112.75"},
+    {"Bandung", "-6.91", "107.61"},
+    {"Yogyakarta", "-7.79", "110.36"}
+};
 
 #include <SPI.h>
 #include <TFT_eSPI.h>
@@ -30,6 +37,8 @@ void TaskWifi(void *pvParameters);
 #define TOUCH_X_MAX  3800
 #define TOUCH_Y_MIN  200
 #define TOUCH_Y_MAX  3800
+
+#include "ui/actions.h"
 
 char city[100] = { 0 };
 const char *get_var_city() {
@@ -180,13 +189,34 @@ void getWeatherData(String city, String lat, String lon) {
   }
 }
 
+void action_swipe(lv_event_t *e) {
+    const unsigned int totalCity = sizeof(coordinate) / sizeof(coordinate[0]);
+    lv_dir_t dir = lv_indev_get_gesture_dir(lv_indev_get_act());
+    
+    if(dir == LV_DIR_LEFT){
+        indexloc = (indexloc + totalCity - 1) % totalCity;
+    } else if(dir == LV_DIR_RIGHT){
+        indexloc = (indexloc + 1) % totalCity;
+    }
+
+    set_var_condition("");
+    set_var_humidity(0);
+    set_var_temp(0);
+    set_var_wind_speed(0);
+    
+    // Send a signal to wake up the WiFi task immediately
+    if (WifiTaskHandle != NULL) {
+        xTaskNotifyGive(WifiTaskHandle);
+    }
+}
+
 void setup()
 {
     Serial.begin(9600);
     tft.init();
     tft.setRotation(0);
     touch.begin();
-    touch.setRotation(3);
+    touch.setRotation(0);
 
     lv_init();
 
@@ -254,15 +284,18 @@ void TaskWifi(void *pvParameters) {
         Serial.print(".");
         vTaskDelay(100 / portTICK_PERIOD_MS);
     }
-  for (;;) { 
-    if (WiFi.status() == WL_CONNECTED) {
-        getWeatherData(coordinate[0][0],coordinate[0][1],coordinate[0][2]);
-        set_var_network(false);
-    } else {
-        Serial.println("[fetch] WiFi disconnected — reconnecting...");
-        set_var_network(true);
-        WiFi.reconnect();
+
+    for (;;) { 
+        if (WiFi.status() == WL_CONNECTED) {
+            // Fetch the data
+            getWeatherData(coordinate[indexloc][0], coordinate[indexloc][1], coordinate[indexloc][2]);
+            set_var_network(false);
+        } else {
+            Serial.println("[fetch] WiFi disconnected — reconnecting...");
+            set_var_network(true);
+            WiFi.reconnect();
+            vTaskDelay(2000 / portTICK_PERIOD_MS); // Short delay so it doesn't spam reconnects
+        }
+        ulTaskNotifyTake(pdTRUE, pdMS_TO_TICKS(fetchDelay * 60000));
     }
-    vTaskDelay(fetchDelay*60 / portTICK_PERIOD_MS);
-  }
 }

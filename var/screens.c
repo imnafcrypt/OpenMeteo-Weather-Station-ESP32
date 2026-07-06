@@ -84,9 +84,9 @@ void create_screen_main() {
             {
                 lv_meter_scale_t *scale = lv_meter_add_scale(obj);
                 state->scale1 = scale;
-                lv_meter_set_scale_ticks(obj, scale, 121, 1, 3, lv_color_hex(0xa0a0a0));
+                lv_meter_set_scale_ticks(obj, scale, 81, 1, 3, lv_color_hex(0xa0a0a0));
                 lv_meter_set_scale_major_ticks(obj, scale, 10, 1, 10, lv_color_hex(0xff0000), 5);
-                lv_meter_set_scale_range(obj, scale, 0, 120, 270, 120);
+                lv_meter_set_scale_range(obj, scale, 0, 80, 270, 120);
                 {
                     lv_meter_indicator_t *indicator = lv_meter_add_needle_line(obj, scale, 1, lv_color_hex(0xffffff), -28);
                     state->indicator1 = indicator;
@@ -101,7 +101,7 @@ void create_screen_main() {
             lv_obj_set_pos(obj, 10, 20);
             lv_obj_set_size(obj, LV_SIZE_CONTENT, LV_SIZE_CONTENT);
             lv_obj_set_style_text_font(obj, &lv_font_montserrat_46, LV_PART_MAIN | LV_STATE_DEFAULT);
-            lv_label_set_text_static(obj, "Jakarta");
+            lv_label_set_text(obj, "");
         }
         {
             lv_obj_t *obj = lv_label_create(parent_obj);
@@ -240,8 +240,8 @@ void tick_screen_main() {
         }
     }
     {
-        float new_val = get_var_temp();
-        float cur_val = lv_bar_get_value(objects.obj1);
+        int32_t new_val = get_var_temp();
+        int32_t cur_val = lv_bar_get_value(objects.obj1);
         if (new_val != cur_val) {
             tick_value_change_obj = objects.obj1;
             lv_bar_set_value(objects.obj1, new_val, LV_ANIM_OFF);
@@ -300,8 +300,8 @@ void tick_screen_main() {
     }
     {
         if (state->indicator1) {
-            float new_val = get_var_wind_speed();
-            float cur_val = state->indicator1->start_value;
+            int32_t new_val = get_var_wind_speed();
+            int32_t cur_val = state->indicator1->start_value;
             if (new_val != cur_val) {
                 tick_value_change_obj = objects.obj4;
                 lv_meter_set_indicator_value(objects.obj4, state->indicator1, new_val);
@@ -319,6 +319,15 @@ void tick_screen_main() {
             } else {
                 lv_obj_clear_flag(objects.obj4, LV_OBJ_FLAG_HIDDEN);
             }
+            tick_value_change_obj = NULL;
+        }
+    }
+    {
+        const char *new_val = get_var_city();
+        const char *cur_val = lv_label_get_text(objects.obj5);
+        if (strcmp(new_val, cur_val) != 0) {
+            tick_value_change_obj = objects.obj5;
+            lv_label_set_text(objects.obj5, new_val);
             tick_value_change_obj = NULL;
         }
     }

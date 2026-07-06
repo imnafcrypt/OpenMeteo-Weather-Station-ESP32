@@ -17,7 +17,8 @@ enum FlowGlobalVariables {
     FLOW_GLOBAL_VARIABLE_HUMIDITY = 1,
     FLOW_GLOBAL_VARIABLE_TEMP = 2,
     FLOW_GLOBAL_VARIABLE_CONDITION = 3,
-    FLOW_GLOBAL_VARIABLE_NETWORK = 4
+    FLOW_GLOBAL_VARIABLE_NETWORK = 4,
+    FLOW_GLOBAL_VARIABLE_CITY = 5
 };
 
 // Native global variables
@@ -32,6 +33,8 @@ extern const char *get_var_condition();
 extern void set_var_condition(const char *value);
 extern bool get_var_network();
 extern void set_var_network(bool value);
+extern const char *get_var_city();
+extern void set_var_city(const char *value);
 
 #ifdef __cplusplus
 }

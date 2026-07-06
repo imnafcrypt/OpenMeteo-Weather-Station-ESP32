@@ -31,19 +31,20 @@ void create_screen_main() {
     objects.main = obj;
     lv_obj_set_pos(obj, 0, 0);
     lv_obj_set_size(obj, 320, 480);
+    lv_obj_add_event_cb(obj, action_swipe, LV_EVENT_GESTURE, (void *)0);
     {
         lv_obj_t *parent_obj = obj;
         {
             lv_obj_t *obj = lv_img_create(parent_obj);
             objects.obj0 = obj;
-            lv_obj_set_pos(obj, 246, 40);
+            lv_obj_set_pos(obj, 241, 94);
             lv_obj_set_size(obj, LV_SIZE_CONTENT, LV_SIZE_CONTENT);
             lv_img_set_src(obj, &img_temp);
         }
         {
             lv_obj_t *obj = lv_bar_create(parent_obj);
             objects.obj1 = obj;
-            lv_obj_set_pos(obj, 280, 68);
+            lv_obj_set_pos(obj, 275, 122);
             lv_obj_set_size(obj, 4, 130);
             lv_bar_set_range(obj, -60, 100);
             lv_obj_clear_flag(obj, LV_OBJ_FLAG_CLICKABLE);
@@ -52,7 +53,7 @@ void create_screen_main() {
         {
             lv_obj_t *obj = lv_label_create(parent_obj);
             objects.obj2 = obj;
-            lv_obj_set_pos(obj, 260, 220);
+            lv_obj_set_pos(obj, 255, 274);
             lv_obj_set_size(obj, 41, 16);
             lv_obj_set_style_text_align(obj, LV_TEXT_ALIGN_CENTER, LV_PART_MAIN | LV_STATE_DEFAULT);
             lv_label_set_text_static(obj, "Temp");
@@ -432,7 +433,7 @@ void tick_screen_main() {
         }
     }
     {
-        char buffer[10];
+        char buffer[16];
         snprintf(buffer, sizeof(buffer), "%.2f C", get_var_temp());
         const char *new_val = buffer;
         const char *cur_val = lv_label_get_text(objects.obj12);
@@ -456,8 +457,8 @@ void tick_screen_main() {
         }
     }
     {
-        char buffer[7];
-        itoa(get_var_humidity(),buffer,10);
+        char buffer[10]; // Pastikan ukuran cukup untuk angka + '%' + '\0'
+        itoa(get_var_humidity(), buffer, 10); // buffer berisi "85"
         strcat(buffer, "%");
         const char *new_val = buffer;
         const char *cur_val = lv_label_get_text(objects.obj13);

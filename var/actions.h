@@ -7,8 +7,6 @@
 extern "C" {
 #endif
 
-extern void action_draw_weather(lv_event_t * e);
-
 #ifdef __cplusplus
 }
 #endif
