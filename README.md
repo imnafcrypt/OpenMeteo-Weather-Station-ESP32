@@ -61,5 +61,4 @@ const char *coordinate[][3] = {
 
 1.  Flash the code to your ESP32.
 2.  Open the Serial Monitor at `9600` baud rate to view debug information and memory logs.
-3.  The device will display "Connecting to Wi-Fi..." in the Serial monitor and attempt to fetch the first location's weather.
-4.  **Swipe Left** or **Swipe Right** on the display to cycle to the next or previous city. The system will immediately wake the Wi-Fi task and fetch the new location's data.
+3.  **Swipe Left** or **Swipe Right** on the display to cycle to the next or previous city. The system will immediately wake the Wi-Fi task and fetch the new location's data.
