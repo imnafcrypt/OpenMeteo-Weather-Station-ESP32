@@ -23,7 +23,7 @@ It connects to Wi-Fi and fetches real-time forecast data from the [Open-Meteo AP
 
 ## 📦 Software Dependencies
 
-You will need the following libraries installed in your Arduino IDE / PlatformIO environment:
+You will need the following libraries installed in your PlatformIO environment:
 
 - [TFT_eSPI](https://github.com/Bodmer/TFT_eSPI) (Configuring `User_Setup.h` via `platformio.ini`)
 - [XPT2046_Touchscreen](https://github.com/PaulStoffregen/XPT2046_Touchscreen)
